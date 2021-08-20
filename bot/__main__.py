@@ -41,7 +41,7 @@ def stats(update, context):
             f'<b>├  🎮 RAM : {memory}%</b>\n' \
             f'<b>├  💽 DISK : {disk}%</b>\n' \
             f'<b>│</b>\n' \
-            f'<b>╰──「 🚸 @AT_BOTS 🚸 」</b>'
+            f'<b>╰──「 🚸 @original_series_family 🚸 」</b>'
     sendMessage(stats, context.bot, update)
 
 
@@ -118,7 +118,7 @@ def bot_help(update, context):
 
 /{BotCommands.SpeedCommand}: Check Internet Speed of the Host
 
-/{BotCommands.RepoCommand}: Get the bot repo.
+/{BotCommands.RepoCommand}: sponsorer link.
 
 /tshelp: Get help for torrent search module.
 
