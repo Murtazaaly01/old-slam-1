@@ -58,7 +58,7 @@ Type /{BotCommands.HelpCommand} to get a list of available commands
 def repo(update, context):
     bot.send_message(update.message.chat_id,
     reply_to_message_id=update.message.message_id,
-    text="https://github.com/ayushteke/slam_aria_mirror_bot_HEROKU", disable_web_page_preview=false)
+    text="t.me/Netflix_orignal_backup_01", disable_web_page_preview=false)
 
 
 @run_async
