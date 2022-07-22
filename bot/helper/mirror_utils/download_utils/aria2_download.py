@@ -49,9 +49,8 @@ class AriaDownloadHelper(DownloadHelper):
                     download_dict[dl.uid()].is_torrent = True
             update_all_messages()
             LOGGER.info(f'Changed gid from {gid} to {new_gid}')
-        else:
-            if dl:
-                threading.Thread(target=dl.getListener().onDownloadComplete).start()
+        elif dl:
+            threading.Thread(target=dl.getListener().onDownloadComplete).start()
 
     @new_thread
     def __onDownloadPause(self, api, gid):
@@ -62,8 +61,8 @@ class AriaDownloadHelper(DownloadHelper):
     @new_thread
     def __onDownloadStopped(self, api, gid):
         LOGGER.info(f"onDownloadStop: {gid}")
-        dl = getDownloadByGid(gid)
-        if dl: dl.getListener().onDownloadError('★ 𝗠𝗔𝗚𝗡𝗘𝗧/𝗧𝗢𝗥𝗥𝗘𝗡𝗧 𝗟𝗜𝗡𝗞 𝗜𝗦 𝗗𝗘𝗔𝗗 ❌ ★')
+        if dl := getDownloadByGid(gid):
+            dl.getListener().onDownloadError('★ 𝗠𝗔𝗚𝗡𝗘𝗧/𝗧𝗢𝗥𝗥𝗘𝗡𝗧 𝗟𝗜𝗡𝗞 𝗜𝗦 𝗗𝗘𝗔𝗗 ❌ ★')
 
     @new_thread
     def __onDownloadError(self, api, gid):

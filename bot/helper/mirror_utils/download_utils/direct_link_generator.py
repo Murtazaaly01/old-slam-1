@@ -62,19 +62,19 @@ def zippy_share(url: str) -> str:
     with session as ses:
         match = re.match(link, url)
         if not match:
-            raise ValueError("Invalid URL: " + str(url))
-        server, id_ = match.group(1), match.group(2)
+            raise ValueError(f"Invalid URL: {url}")
+        server, id_ = match[1], match[2]
         res = ses.get(url)
         res.raise_for_status()
         match = re.search(regex_result, res.text, re.DOTALL)
         if not match:
             raise ValueError("Invalid Response!")
-        val_1 = int(match.group(1))
+        val_1 = int(match[1])
         val_2 = math.floor(val_1 / 3)
-        val_3 = int(match.group(2))
+        val_3 = int(match[2])
         val = val_1 + val_2 % val_3
-        name = match.group(3)
-        dl_url = "https://www{}.zippyshare.com/d/{}/{}/{}".format(server, id_, val, name)
+        name = match[3]
+        dl_url = f"https://www{server}.zippyshare.com/d/{id_}/{val}/{name}"
     return dl_url
 
 
@@ -84,12 +84,10 @@ def yandex_disk(url: str) -> str:
     try:
         link = re.findall(r'\bhttps?://.*yadi\.sk\S+', url)[0]
     except IndexError:
-        reply = "`No Yandex.Disk links found`\n"
-        return reply
+        return "`No Yandex.Disk links found`\n"
     api = 'https://cloud-api.yandex.net/v1/disk/public/resources/download?public_key={}'
     try:
-        dl_url = requests.get(api.format(link)).json()['href']
-        return dl_url
+        return requests.get(api.format(link)).json()['href']
     except KeyError:
         raise DirectDownloadLinkException("`Error: File not found / Download limit reached`\n")
 
@@ -109,8 +107,7 @@ def cm_ru(url: str) -> str:
         data = json.loads(result)
     except json.decoder.JSONDecodeError:
         raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
-    dl_url = data['download']
-    return dl_url
+    return data['download']
 
 def uptobox(url: str) -> str:
     """ Uptobox direct links generator
@@ -129,7 +126,8 @@ def uptobox(url: str) -> str:
             dl_url = url
         except:
             file_id = re.findall(r'\bhttps?://.*uptobox\.com/(\w+)', url)[0]
-            file_link = 'https://uptobox.com/api/link?token=%s&file_code=%s' % (UPTOBOX_TOKEN, file_id)
+            file_link = f'https://uptobox.com/api/link?token={UPTOBOX_TOKEN}&file_code={file_id}'
+
             req = requests.get(file_link)
             result = req.json()
             dl_url = result['data']['dlLink']
@@ -144,8 +142,7 @@ def mediafire(url: str) -> str:
         raise DirectDownloadLinkException("`No MediaFire links found`\n")
     page = BeautifulSoup(requests.get(link).content, 'lxml')
     info = page.find('a', {'aria-label': 'Download file'})
-    dl_url = info.get('href')
-    return dl_url
+    return info.get('href')
 
 
 def osdn(url: str) -> str:
@@ -175,8 +172,7 @@ def github(url: str) -> str:
         raise DirectDownloadLinkException("`No GitHub Releases links found`\n")
     download = requests.get(url, stream=True, allow_redirects=False)
     try:
-        dl_url = download.headers["location"]
-        return dl_url
+        return download.headers["location"]
     except KeyError:
         raise DirectDownloadLinkException("`Error: Can't extract the link`\n")
 

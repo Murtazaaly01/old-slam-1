@@ -56,11 +56,10 @@ class MegaAppListener(MegaListener):
         return self.__bytes_transferred
 
     def onRequestStart(self, api, request):
-        LOGGER.info('Request start ({})'.format(request))
+        LOGGER.info(f'Request start ({request})')
 
     def onRequestFinish(self, api, request, error):
-        LOGGER.info('Mega Request finished ({}); Result: {}'
-                    .format(request, error))
+        LOGGER.info(f'Mega Request finished ({request}); Result: {error}')
         if str(error).lower() != "no error":
             self.error = error.copy()
             return
@@ -79,7 +78,7 @@ class MegaAppListener(MegaListener):
     def onRequestTemporaryError(self, api, request, error: MegaError):
         LOGGER.info(f'Mega Request error in {error}')
         if not self.is_cancelled:
-            self.listener.onDownloadError("RequestTempError: " + error.toString())
+            self.listener.onDownloadError(f"RequestTempError: {error.toString()}")
             self.is_cancelled = True
         self.error = error.toString()
         self.continue_event.set()
@@ -108,7 +107,7 @@ class MegaAppListener(MegaListener):
         errStr = error.toString()
         LOGGER.info(f'Mega download error in file {transfer} {filen}: {error}')
 
-        if state == 1 or state == 4:
+        if state in [1, 4]:
             # Sometimes MEGA (offical client) can't stream a node either and raises a temp failed error.
             # Don't break the transfer queue if transfer's in queued (1) or retrying (4) state [causes seg fault]
             return
